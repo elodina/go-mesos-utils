@@ -44,6 +44,10 @@ func TestFileStorage(t *testing.T) {
 	if string(loadedContents) != contents {
 		t.Errorf("Expected contents %s, actual %s", contents, string(loadedContents))
 	}
+
+	if storage.String() != file {
+		t.Errorf("Expected string representation %s, actual %s", file, storage.String())
+	}
 }
 
 func TestZKStorage(t *testing.T) {
@@ -80,6 +84,10 @@ func TestZKStorage(t *testing.T) {
 	err = zkDelete(conn, zpath)
 	if err != nil {
 		t.Fatal(err)
+	}
+
+	if storage.String() != fmt.Sprintf("%s%s", zkConnect, zpath) {
+		t.Errorf("Expected string representation %s, actual %s", fmt.Sprintf("%s%s", zkConnect, zpath), storage.String())
 	}
 }
 

@@ -17,6 +17,7 @@ package utils
 
 import (
 	"errors"
+	"fmt"
 	"github.com/samuel/go-zookeeper/zk"
 	"io/ioutil"
 	"path"
@@ -45,6 +46,10 @@ func (fs *FileStorage) Save(contents []byte) error {
 
 func (fs *FileStorage) Load() ([]byte, error) {
 	return ioutil.ReadFile(fs.file)
+}
+
+func (fs *FileStorage) String() string {
+	return fmt.Sprintf("%s", fs.file)
 }
 
 type ZKStorage struct {
@@ -91,6 +96,10 @@ func (zs *ZKStorage) Load() ([]byte, error) {
 
 	contents, _, err := conn.Get(zs.zPath)
 	return contents, err
+}
+
+func (zs *ZKStorage) String() string {
+	return fmt.Sprintf("%s%s", zs.zkConnect, zs.zPath)
 }
 
 func (zs *ZKStorage) createChrootIfRequired() error {
