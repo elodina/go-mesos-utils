@@ -211,7 +211,7 @@ func (g *GroupBy) String() string {
 }
 
 func CheckConstraints(offer *mesos.Offer, taskConstraints map[string][]Constraint, otherTasks []Constrained) string {
-	offerAttributes := offerAttributes(offer)
+	offerAttributes := OfferAttributes(offer)
 
 	for name, constraints := range taskConstraints {
 		for _, constraint := range constraints {
@@ -231,7 +231,7 @@ func CheckConstraints(offer *mesos.Offer, taskConstraints map[string][]Constrain
 	return ""
 }
 
-func offerAttributes(offer *mesos.Offer) map[string]string {
+func OfferAttributes(offer *mesos.Offer) map[string]string {
 	offerAttributes := map[string]string{
 		"hostname": offer.GetHostname(),
 	}
