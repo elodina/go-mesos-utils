@@ -196,10 +196,10 @@ func TestMatchesAttributes(t *testing.T) {
 		},
 	}
 
-	assert(t, new(Constraints).CheckConstraints(offer, task1.Constraints(), []Constrained{task1}), "")
+	assert(t, CheckConstraints(offer, task1.Constraints(), []Constrained{task1}), "")
 
 	offer.Attributes[0].Text.Value = proto.String("2-1")
-	assert(t, new(Constraints).CheckConstraints(offer, task1.Constraints(), []Constrained{task1}), "rack doesn't match like:^1-.*")
+	assert(t, CheckConstraints(offer, task1.Constraints(), []Constrained{task1}), "rack doesn't match like:^1-.*")
 
 	task2 := &TestConstrained{
 		constraints: map[string][]Constraint{
@@ -213,7 +213,7 @@ func TestMatchesAttributes(t *testing.T) {
 
 	offer.Attributes[0].Name = proto.String("floor")
 	offer.Attributes[0].Text.Value = proto.String("1")
-	assert(t, new(Constraints).CheckConstraints(offer, task2.Constraints(), []Constrained{task2}), "floor doesn't match unique")
+	assert(t, CheckConstraints(offer, task2.Constraints(), []Constrained{task2}), "floor doesn't match unique")
 }
 
 type TestConstrained struct {

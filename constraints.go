@@ -210,16 +210,14 @@ func (g *GroupBy) String() string {
 	}
 }
 
-type Constraints struct{}
-
-func (c *Constraints) CheckConstraints(offer *mesos.Offer, taskConstraints map[string][]Constraint, otherTasks []Constrained) string {
-	offerAttributes := c.offerAttributes(offer)
+func CheckConstraints(offer *mesos.Offer, taskConstraints map[string][]Constraint, otherTasks []Constrained) string {
+	offerAttributes := offerAttributes(offer)
 
 	for name, constraints := range taskConstraints {
 		for _, constraint := range constraints {
 			attribute, exists := offerAttributes[name]
 			if exists {
-				if !constraint.Matches(attribute, c.otherTasksAttributes(name, otherTasks)) {
+				if !constraint.Matches(attribute, otherTasksAttributes(name, otherTasks)) {
 					fmt.Printf("Attribute %s doesn't match %s\n", name, constraint) //TODO probably should add logger to this utils?
 					return fmt.Sprintf("%s doesn't match %s", name, constraint)
 				}
@@ -233,7 +231,7 @@ func (c *Constraints) CheckConstraints(offer *mesos.Offer, taskConstraints map[s
 	return ""
 }
 
-func (c *Constraints) offerAttributes(offer *mesos.Offer) map[string]string {
+func offerAttributes(offer *mesos.Offer) map[string]string {
 	offerAttributes := map[string]string{
 		"hostname": offer.GetHostname(),
 	}
@@ -248,7 +246,7 @@ func (c *Constraints) offerAttributes(offer *mesos.Offer) map[string]string {
 	return offerAttributes
 }
 
-func (c *Constraints) otherTasksAttributes(name string, otherTasks []Constrained) []string {
+func otherTasksAttributes(name string, otherTasks []Constrained) []string {
 	attributes := make([]string, 0)
 	for _, task := range otherTasks {
 		attribute := task.Attribute(name)
