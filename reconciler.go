@@ -36,6 +36,7 @@ func NewReconciler(tasks Tasks) *Reconciler {
 		ReconcileDelay:    10 * time.Second,
 		ReconcileMaxTries: 3,
 		reconcileTime:     time.Unix(0, 0),
+		tasks:             tasks,
 	}
 }
 
