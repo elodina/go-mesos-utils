@@ -32,7 +32,9 @@ type Tasks interface {
 }
 
 func NewTasks() Tasks {
-	return new(tasks)
+	return &tasks{
+		tasks: make(map[string]Task),
+	}
 }
 
 type tasks struct {
@@ -157,15 +159,15 @@ type Task interface {
 
 // also implements Constrained
 type TaskData struct {
-	ID          string
-	TaskID      string
-	SlaveID     string
-	ExecutorID  string
-	Attributes  map[string]string
-	State       TaskState
-	Cpu         float64
-	Mem         float64
-	constraints map[string][]Constraint
+	ID            string
+	TaskID        string
+	SlaveID       string
+	ExecutorID    string
+	Attributes    map[string]string
+	State         TaskState
+	Cpu           float64
+	Mem           float64
+	ConstraintMap Constraints
 }
 
 func (td *TaskData) Attribute(name string) string {
@@ -173,7 +175,7 @@ func (td *TaskData) Attribute(name string) string {
 }
 
 func (td *TaskData) Constraints() map[string][]Constraint {
-	return td.constraints
+	return td.ConstraintMap
 }
 
 func (td *TaskData) WaitFor(state TaskState, timeout time.Duration) bool {
