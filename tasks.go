@@ -28,7 +28,9 @@ type Tasks interface {
 	Get(id string) Task
 	GetAll() []Task
 	GetWithFilter(filter func(Task) bool) []Task
+	GetStopped() []Task
 	IsReconciling() bool
+	GetConstrained() []Constrained
 }
 
 func NewTasks() Tasks {
@@ -76,6 +78,21 @@ func (t *tasks) GetWithFilter(filter func(Task) bool) []Task {
 	}
 
 	return tasks
+}
+
+func (t *tasks) GetStopped() []Task {
+	return t.GetWithFilter(func(task Task) bool {
+		return task.Data().State == TaskStateStopped
+	})
+}
+
+func (t *tasks) GetConstrained() []Constrained {
+	constrained := make([]Constrained, 0, len(t.tasks))
+	for _, task := range t.tasks {
+		constrained = append(constrained, task.Data())
+	}
+
+	return constrained
 }
 
 func (t *tasks) IsReconciling() bool {
@@ -137,6 +154,20 @@ func (t *threadSafeTasks) GetWithFilter(filter func(Task) bool) []Task {
 	return t.tasks.GetWithFilter(filter)
 }
 
+func (t *threadSafeTasks) GetStopped() []Task {
+	t.taskLock.Lock()
+	defer t.taskLock.Unlock()
+
+	return t.tasks.GetStopped()
+}
+
+func (t *threadSafeTasks) GetConstrained() []Constrained {
+	t.taskLock.Lock()
+	defer t.taskLock.Unlock()
+
+	return t.tasks.GetConstrained()
+}
+
 func (t *threadSafeTasks) IsReconciling() bool {
 	return t.tasks.IsReconciling()
 }
@@ -159,6 +190,7 @@ type Task interface {
 
 // also implements Constrained
 type TaskData struct {
+	Type          string
 	ID            string
 	TaskID        string
 	SlaveID       string
