@@ -26,3 +26,14 @@ func GetScalarResources(offer *mesos.Offer, resourceName string) float64 {
 	}
 	return resources
 }
+
+func GetRangeResources(offer *mesos.Offer, resourceName string) []*mesos.Value_Range {
+	resources := make([]*mesos.Value_Range, 0)
+	filteredResources := util.FilterResources(offer.Resources, func(res *mesos.Resource) bool {
+		return res.GetName() == resourceName
+	})
+	for _, res := range filteredResources {
+		resources = append(resources, res.GetRanges().GetRange()...)
+	}
+	return resources
+}
