@@ -125,7 +125,7 @@ func Attribute(attribute *mesos.Attribute) string {
 func Status(status *mesos.TaskStatus) string {
 	var buffer bytes.Buffer
 	buffer.WriteString(fmt.Sprintf("%s %s", status.GetTaskId().GetValue(), status.GetState().String()))
-	if status.GetSlaveId().GetValue() != "" {
+	if status.GetSlaveId() != nil && status.GetSlaveId().GetValue() != "" {
 		buffer.WriteString(" slave: ")
 		buffer.WriteString(ID(status.GetSlaveId().GetValue()))
 	}
