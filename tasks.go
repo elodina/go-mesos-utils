@@ -183,6 +183,7 @@ const (
 )
 
 type Task interface {
+	Config() TaskConfig
 	Data() *TaskData
 	Matches(*mesos.Offer) string
 	NewTaskInfo(*mesos.Offer) *mesos.TaskInfo
